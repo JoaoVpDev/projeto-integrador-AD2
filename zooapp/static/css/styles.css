@@ -389,6 +389,73 @@ body.dark-mode .profile-menu-item:hover {
   margin-left: 60px;
 }
 
+/* Estilos para a página de login */
+.login-container {
+  width: 90%;
+  max-width: 600px;
+  min-width: 320px;
+  margin: 100px auto;
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.login-form .form-group {
+  margin-bottom: 20px;
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-login:hover {
+  background-color: #45a049;
+}
+
+.alert {
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
 /* FORMULÁRIO */
 .item-form {
   max-width: 600px;
@@ -506,38 +573,9 @@ body.dark-mode .page-title {
   margin-bottom: 16px;
 }
 
-/* Estilos do botão "Importar Excel" */
-.btn-importar {
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
-  border-radius: 5px;
-  text-decoration: none;
-  text-align: center;
-  font-size: 16px;
-  transition: background-color 0.3s;
-}
-
 .btn-importar:hover {
   background-color: #45a049;
   /* Efeito de hover mais escuro */
-}
-
-.btn-importar:active {
-  background-color: #388e3c;
-  /* Efeito de clique */
-}
-
-/* Estilos do botão "Exportar para Excel" */
-.btn-exportar {
-  padding: 10px 20px;
-  background-color: #2196F3;
-  color: white;
-  border-radius: 5px;
-  text-decoration: none;
-  text-align: center;
-  font-size: 16px;
-  transition: background-color 0.3s;
 }
 
 .btn-exportar:hover {
@@ -564,8 +602,6 @@ body.dark-mode .page-title {
   background-color: #9a1b1b;
   /* Efeito de clique */
 }
-
-
 
 /* Modal - Fundo */
 .modal {
@@ -730,6 +766,7 @@ body.dark-mode form#editForm button[type="submit"] {
 body.dark-mode form#editForm button[type="submit"]:hover {
   background-color: #2a6d2a;
 }
+
 
 /* INPUT CHECKBOX */
 .checkbox {
