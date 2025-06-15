@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZooCollection - Login</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-logo">
+            <a href="{% url 'home' %}">
+                <img src="{% static 'img/dino.png' %}" alt="Logo ZooCollection">
+            </a>
+        </div>
+
+        {% block content %}{% endblock %}
+
+        <div class="login-footer">
+            <p>Não tem uma conta? Solicite ao administrador do sistema</p>
+        </div>
+    </div>
+
+    <div class="login-theme-toggle" id="darkModeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <script>
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+
+        // Verificar tema salvo
+        const savedTheme = localStorage.getItem('theme');
+        const isDark = savedTheme === 'dark';
+
+        // Aplicar tema
+        body.classList.toggle('dark-mode', isDark);
+        darkModeToggle.querySelector('i').classList.replace(
+            isDark ? 'fa-moon' : 'fa-sun',
+            isDark ? 'fa-sun' : 'fa-moon'
+        );
+
+        // Alternar tema
+        darkModeToggle.addEventListener('click', () => {
+            const isDarkMode = body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+
+            const icon = darkModeToggle.querySelector('i');
+            icon.classList.replace(
+                isDarkMode ? 'fa-moon' : 'fa-sun',
+                isDarkMode ? 'fa-sun' : 'fa-moon'
+            );
+        });
+    </script>
+</body>
+
+</html>
