@@ -55,7 +55,11 @@ def custom_logout(request):
 
 # Página de perfil do usuário
 def perfil_view(request):
-    return render(request, "perfil.html")
+    return render(
+        request,
+        "zooapp/perfil.html",
+        {"user": request.user, "permissions": request.user.get_all_permissions()},
+    )
 
 
 # Listar itens

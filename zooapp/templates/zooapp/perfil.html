@@ -11,14 +11,22 @@
         </div>
         <div class="profile-details">
             <h2>{{ user.get_full_name|default:user.username }}</h2>
-            <p><strong>Usuário:</strong> admin</p>
-            <p><strong>Email:</strong> admin@admin.com</p>
-            <p><strong>Data de criação:</strong> 17/05/2025</p>
+            <p><strong>Usuário:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Data de criação:</strong> {{ user.date_joined|date:"d/m/Y" }}</p>
+
+            <p><strong>Permissões:</strong></p>
+            <ul>
+                {% for perm in permissions %}
+                <li>{{ perm }}</li>
+                {% empty %}
+                <li>Nenhuma permissão atribuída.</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 
     <div class="profile-actions">
-        <button class="btn disabled" disabled>Editar Perfil</button>
         <a href="{% url 'logout' %}" class="btn btn-logout">Sair</a>
     </div>
 </div>
