@@ -17,17 +17,18 @@
     <tr>
       <td>{{ item.nome }}</td>
       <td>{{ item.especime }}</td>
-      <td>{{ item.data_coleta }}</td>
+      <td>{{ item.data_coleta|date:"d/m/Y" }}</td>
       <td>
-        <!-- Botão de editar -->
+        <!-- Botão Editar -->
         <button class="btn btn-editar" data-id="{{ item.id }}">
           <i class="fas fa-pen"></i>
         </button>
 
-        <!-- Formulário de exclusão -->
+        <!-- Botão Excluir -->
         <form method="post" action="{% url 'excluir_item' item.id %}" style="display:inline;">
           {% csrf_token %}
-          <button type="submit" class="btn btn-excluir">
+          <button type="submit" class="btn btn-excluir"
+            onclick="return confirm('Tem certeza que deseja excluir este item?');">
             <i class="fas fa-trash"></i>
           </button>
         </form>
@@ -40,56 +41,4 @@
     {% endfor %}
   </tbody>
 </table>
-
-<!-- Modal de Edição -->
-<div id="editModal" class="modal">
-  <div class="modal-content" id="modal-form-container">
-    <!-- Formulário será carregado dinamicamente -->
-  </div>
-</div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    console.log("Script carregado");
-
-    // Abertura do modal de edição
-    document.querySelectorAll(".btn-editar").forEach(button => {
-      button.addEventListener("click", () => {
-        const itemId = button.getAttribute("data-id");
-        if (!itemId) {
-          alert("ID do item não encontrado!");
-          return;
-        }
-
-        fetch(`/editar/${itemId}/`)
-          .then(response => {
-            if (!response.ok) throw new Error("Erro ao carregar formulário.");
-            return response.text();
-          })
-          .then(data => {
-            document.getElementById("modal-form-container").innerHTML = data;
-            document.getElementById("editModal").style.display = "block";
-          })
-          .catch(error => {
-            console.error("Erro ao buscar formulário:", error);
-          });
-      });
-    });
-
-    // Fechar modal clicando fora
-    window.onclick = function (event) {
-      const modal = document.getElementById("editModal");
-      if (event.target === modal) {
-        modal.style.display = "none";
-      }
-    };
-
-    // Fechar modal clicando no X
-    document.addEventListener("click", function (e) {
-      if (e.target.classList.contains("close-btn")) {
-        document.getElementById("editModal").style.display = "none";
-      }
-    });
-  });
-</script>
 {% endblock %}

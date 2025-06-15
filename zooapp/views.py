@@ -7,8 +7,6 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from .models import Item
 from .forms import ItemForm
 
-# Lista simulada de itens (sem banco de dados)
-
 
 # Página inicial
 @login_required
@@ -62,8 +60,14 @@ def perfil_view(request):
 
 # Listar itens
 @login_required
+@login_required
 def listar_itens(request):
-    return render(request, "listar_itens.html", {"itens": ITENS_FAKE})
+    itens = Item.objects.all().order_by("nome")  # Adicionado ordenação padrão
+    return render(
+        request,
+        "zooapp/listar_itens.html",
+        {"itens": itens, "can_add": request.user.has_perm("zooapp.add_item")},
+    )
 
 
 # Adicionar novo item
@@ -109,9 +113,15 @@ def editar_item(request, id):
 # Excluir item
 @login_required
 @permission_required("zooapp.delete_item", raise_exception=True)
-def excluir_item(request, id):
-    global ITENS_FAKE
+def excluir_item(
+    request, item_id
+):  # Mude de 'id' para 'item_id' para manter consistência
+    item = get_object_or_404(Item, id=item_id)
+
     if request.method == "POST":
-        ITENS_FAKE = [item for item in ITENS_FAKE if item["id"] != id]
+        item.delete()
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return JsonResponse({"success": True})
         return redirect("listar_itens")
-    return HttpResponse("Método não permitido", status=405)
+
+    return render(request, "zooapp/confirmar_exclusao.html", {"item": item})
