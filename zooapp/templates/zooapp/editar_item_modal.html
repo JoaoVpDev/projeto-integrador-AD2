@@ -1,45 +1,20 @@
-<div class="modal-header">
-  <span class="close-btn">&times;</span>
-  <h2>Editar Item</h2>
-</div>
-
-<form method="post" action="{% url 'editar_item' item.id %}" id="editForm">
+<form id="formEditarItem" method="post" action="{% url 'editar_item' item.id %}">
   {% csrf_token %}
-  <label>Nome:</label>
-  <input type="text" name="nome" value="{{ item.nome }}" required>
-
-  <label>Espécime:</label>
-  <input type="text" name="especime" value="{{ item.especime }}" required>
-
-  <label>Data de Coleta:</label>
-  <input type="date" name="data_coleta" value="{{ item.data_coleta }}" required>
-
-  <button type="submit">Salvar</button>
+  <h3>Editar Item</h3>
+  <div class="form-group">
+    <label for="id_nome">Nome:</label>
+    {{ form.nome }}
+  </div>
+  <div class="form-group">
+    <label for="id_especime">Espécime:</label>
+    {{ form.especime }}
+  </div>
+  <div class="form-group">
+    <label for="id_data_coleta">Data de Coleta:</label>
+    {{ form.data_coleta }}
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <button type="button" class="btn close-btn">Cancelar</button>
+  </div>
 </form>
-
-<script>
-  console.log("Script carregado");
-
-  const form = document.getElementById('editForm');
-  form.addEventListener('submit', async function (event) {
-    event.preventDefault();
-
-    const url = form.action;
-    const formData = new FormData(form);
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-      },
-      body: formData
-    });
-
-    if (response.ok) {
-      document.getElementById('editModal').style.display = 'none';
-      location.reload();
-    } else {
-      alert('Erro ao salvar o item.');
-    }
-  });
-</script>

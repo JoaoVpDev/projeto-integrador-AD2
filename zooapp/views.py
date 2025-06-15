@@ -8,13 +8,7 @@ from .models import Item
 from .forms import ItemForm
 
 
-# Página inicial
-@login_required
-def home(request):
-    return render(request, "home.html")
-
-
-# Login do usuário
+# View de Login Personalizada (Atualizada com segurança)
 def custom_login(request):
     if request.user.is_authenticated:
         return redirect("home")
@@ -46,14 +40,20 @@ def custom_login(request):
     )
 
 
-# Logout do usuário
+# View de Logout (Atualizada com mensagem de feedback)
 def custom_logout(request):
     auth_logout(request)
     messages.success(request, "Você foi desconectado com sucesso.")
     return redirect("login")
 
 
-# Página de perfil do usuário
+# Página inicial (Atualizada com contexto do usuário)
+@login_required
+def home(request):
+    return render(request, "zooapp/home.html", {"user": request.user})
+
+
+# Página de perfil do usuário (Atualizada)
 def perfil_view(request):
     return render(
         request,
@@ -62,8 +62,7 @@ def perfil_view(request):
     )
 
 
-# Listar itens
-@login_required
+# Listar itens (Atualizada com paginação)
 @login_required
 def listar_itens(request):
     itens = Item.objects.all().order_by("nome")  # Adicionado ordenação padrão
@@ -74,7 +73,7 @@ def listar_itens(request):
     )
 
 
-# Adicionar novo item
+# Adicionar novo item (Atualizada com mensagens)
 @login_required
 @permission_required("zooapp.add_item", raise_exception=True)
 def adicionar_item(request):
@@ -96,25 +95,47 @@ def adicionar_item(request):
     )
 
 
-# Editar item existente
+# Editar item existente (Atualizada com mensagens)
 @login_required
 @permission_required("zooapp.change_item", raise_exception=True)
-def editar_item(request, id):
-    global ITENS_FAKE
-    item = next((i for i in ITENS_FAKE if i["id"] == id), None)
-    if not item:
-        return HttpResponse("Item não encontrado", status=404)
+def editar_item(request, item_id):
+    item = get_object_or_404(Item, pk=item_id)
 
     if request.method == "POST":
-        item["nome"] = request.POST.get("nome")
-        item["especime"] = request.POST.get("especime")
-        item["data_coleta"] = request.POST.get("data_coleta")
-        return redirect("listar_itens")
+        form = ItemForm(request.POST, instance=item)
+        if form.is_valid():
+            item_atualizado = form.save()
 
-    return render(request, "editar_item_modal.html", {"item": item})
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return JsonResponse(
+                    {"success": True, "message": "Item atualizado com sucesso!"}
+                )
+
+            messages.success(
+                request, f"Item '{item_atualizado.nome}' atualizado com sucesso!"
+            )
+            return redirect("listar_itens")
+        else:
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return JsonResponse(
+                    {
+                        "errors": form.errors,
+                        "message": "Por favor, corrija os erros abaixo.",
+                    },
+                    status=400,
+                )
+            messages.error(request, "Por favor, corrija os erros abaixo.")
+    else:
+        form = ItemForm(instance=item)
+
+    return render(
+        request,
+        "zooapp/editar_item_modal.html",
+        {"form": form, "item": item, "action": "Editar"},
+    )
 
 
-# Excluir item
+# Excluir item (Atualizada com mensagens e tratamento AJAX)
 @login_required
 @permission_required("zooapp.delete_item", raise_exception=True)
 def excluir_item(

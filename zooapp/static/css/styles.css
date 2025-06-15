@@ -731,6 +731,22 @@ body.dark-mode .page-title {
   /* Efeito de clique */
 }
 
+.modal.show {
+  display: block;
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
 /* Modal - Fundo */
 .modal {
   display: none;
@@ -779,7 +795,7 @@ body.dark-mode .page-title {
 }
 
 .close-btn {
-  font-size: 28px;
+  font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
   color: #888;
@@ -788,7 +804,7 @@ body.dark-mode .page-title {
 }
 
 .close-btn:hover {
-  color: #4caf50;
+  color: red;
 }
 
 /* Form do modal */
@@ -826,7 +842,7 @@ form#editForm input[type="date"]:focus {
 form#editForm button[type="submit"] {
   padding: 12px 0;
   background-color: #4caf50;
-  color: white;
+  color: #888;
   font-weight: 700;
   font-size: 1.1rem;
   border: none;
@@ -949,5 +965,21 @@ body.dark-mode form#editForm button[type="submit"]:hover {
 
   .main-content {
     margin-left: 60px;
+  }
+
+  .login-container {
+    padding: 30px 20px;
+    margin: 0 20px;
+  }
+
+  .login-logo img {
+    height: 60px;
+  }
+
+  .login-theme-toggle {
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
   }
 }

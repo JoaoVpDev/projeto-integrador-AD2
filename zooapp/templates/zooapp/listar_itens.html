@@ -41,4 +41,107 @@
     {% endfor %}
   </tbody>
 </table>
+
+<!-- Modal de Edição -->
+<div id="editModal" class="modal">
+  <div class="modal-content" id="modal-form-container">
+    <!-- Conteúdo será carregado via AJAX -->
+  </div>
+</div>
+
+<script>
+  // Função para abrir o modal
+  function openModal() {
+    document.getElementById('editModal').style.display = 'block';
+  }
+
+  // Função para fechar o modal
+  function closeModal() {
+    document.getElementById('editModal').style.display = 'none';
+  }
+
+  // Event listeners para edição
+  document.querySelectorAll('.btn-editar').forEach(button => {
+    button.addEventListener('click', function () {
+      const itemId = this.getAttribute('data-id');
+
+      fetch(`/editar/${itemId}/`, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+        .then(response => {
+          if (!response.ok) throw new Error('Erro ao carregar formulário');
+          return response.text();
+        })
+        .then(html => {
+          document.getElementById('modal-form-container').innerHTML = html;
+          openModal();
+
+          // submit do formulário
+          const form = document.getElementById('formEditarItem');
+          if (form) {
+            form.addEventListener('submit', function (e) {
+              e.preventDefault();
+              const formData = new FormData(this);
+
+              fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'X-CSRFToken': '{{ csrf_token }}'
+                }
+              })
+                .then(response => {
+                  if (response.ok) {
+                    return response.json();
+                  }
+                  return response.json().then(err => { throw err; });
+                })
+                .then(data => {
+                  if (data.success) {
+                    closeModal();
+                    window.location.reload();
+                  }
+                })
+                .catch(error => {
+                  console.error('Erro:', error);
+                  if (error.errors) {
+                    // Mostra erros de validação
+                    let errorHtml = '<div class="alert alert-danger"><ul>';
+                    for (const field in error.errors) {
+                      error.errors[field].forEach(msg => {
+                        errorHtml += `<li>${field}: ${msg}</li>`;
+                      });
+                    }
+                    errorHtml += '</ul></div>';
+                    document.getElementById('modal-form-container').insertAdjacentHTML('afterbegin', errorHtml);
+                  } else {
+                    alert('Erro ao salvar as alterações');
+                  }
+                });
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Erro:', error);
+          alert('Erro ao carregar o formulário');
+        });
+    });
+  });
+
+  // Fechar modal ao clicar no X ou fora
+  document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('close-btn')) {
+      closeModal();
+    }
+  });
+
+  window.addEventListener('click', function (event) {
+    if (event.target === document.getElementById('editModal')) {
+      closeModal();
+    }
+  });
+</script>
 {% endblock %}
