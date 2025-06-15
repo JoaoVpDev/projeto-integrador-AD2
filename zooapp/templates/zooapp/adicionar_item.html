@@ -1,54 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'zooapp/base.html' %}
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
+{% block content %}
+<a href="{% url 'listar_itens' %}" class="back-button">← Voltar para a lista</a>
+<h2 class="page-title">Adicionar Novo Item</h2>
 
-<body>
-  {% extends 'zooapp/base.html' %}
+<form method="post" class="item-form">
+  {% csrf_token %}
 
-  {% block content %}
-  <a href="{% url 'listar_itens' %}" class="back-button">← Voltar para a lista</a>
-  <h2 class="page-title">Adicionar Novo Item</h2>
+  {% if form.errors %}
+  <div class="form-errors">
+    {% for field in form %}
+    {% for error in field.errors %}
+    <p class="error">{{ error }}</p>
+    {% endfor %}
+    {% endfor %}
+  </div>
+  {% endif %}
 
-  <form method="post" class="item-form" onsubmit="return validarCamposAdicionar()">
-    {% csrf_token %}
+  {{ form.as_p }}
 
-    <div class="form-group">
-      <label for="nome">Nome:</label>
-      <input type="text" id="nome" name="nome" class="form-input" required>
-    </div>
-
-    <div class="form-group">
-      <label for="especime">Espécime:</label>
-      <input type="text" id="especime" name="especime" class="form-input" required>
-    </div>
-
-    <div class="form-group">
-      <label for="data_coleta">Data de Coleta:</label>
-      <input type="date" id="data_coleta" name="data_coleta" class="form-input" required>
-    </div>
-
-    <button type="submit">Salvar</button>
-  </form>
-
-  <script>
-    function validarCamposAdicionar() {
-      const nome = document.getElementById("nome").value.trim();
-      const especime = document.getElementById("especime").value.trim();
-      const data = document.getElementById("data_coleta").value.trim();
-
-      if (!nome || !especime || !data) {
-        alert("Por favor, preencha todos os campos.");
-        return false;
-      }
-      return true;
-    }
-  </script>
-  {% endblock %}
-</body>
-
-</html>
+  <button type="submit">Salvar</button>
+</form>
+{% endblock %}

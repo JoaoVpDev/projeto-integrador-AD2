@@ -8,20 +8,6 @@ from .models import Item
 from .forms import ItemForm
 
 # Lista simulada de itens (sem banco de dados)
-ITENS_FAKE = [
-    {
-        "id": 1,
-        "nome": "Tigre",
-        "especime": "Panthera tigris",
-        "data_coleta": "2023-10-05",
-    },
-    {
-        "id": 2,
-        "nome": "Pinguim",
-        "especime": "Aptenodytes forsteri",
-        "data_coleta": "2024-01-15",
-    },
-]
 
 
 # Página inicial
@@ -85,23 +71,21 @@ def listar_itens(request):
 @permission_required("zooapp.add_item", raise_exception=True)
 def adicionar_item(request):
     if request.method == "POST":
-        nome = request.POST.get("nome")
-        especime = request.POST.get("especime")
-        data_coleta = request.POST.get("data_coleta")
-
-        if nome and especime and data_coleta:
-            novo_id = max(item["id"] for item in ITENS_FAKE) + 1 if ITENS_FAKE else 1
-            ITENS_FAKE.append(
-                {
-                    "id": novo_id,
-                    "nome": nome,
-                    "especime": especime,
-                    "data_coleta": data_coleta,
-                }
+        form = ItemForm(request.POST)
+        if form.is_valid():
+            novo_item = form.save()
+            messages.success(
+                request, f"Item '{novo_item.nome}' adicionado com sucesso!"
             )
             return redirect("listar_itens")
+        else:
+            messages.error(request, "Por favor, corrija os erros abaixo.")
+    else:
+        form = ItemForm()
 
-    return render(request, "adicionar_item.html")
+    return render(
+        request, "zooapp/adicionar_item.html", {"form": form, "action": "Adicionar"}
+    )
 
 
 # Editar item existente
